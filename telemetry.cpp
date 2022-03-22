@@ -1,14 +1,23 @@
 #include "telemetry.h"
 #include "client.h"
+#include "type_traits_frame.h"
 
-int Telemetry::start()
+Telemetry::Telemetry(std::shared_ptr<TcpClient> model): _model(model)
 {
     _model->startUpsocket();
     _model->getip();
     _model->StartConnect();
-      
-    
-    return 0;
+}
+
+void Telemetry::start()
+{
+    Frame start;
+    start.setFrameType(TypeFrame::Start);
+    if(_model->sendFrame(start))
+    {
+        _model->notify("Sending START");
+    }
+
 }
 
 // void Telemetry::setModelState()

@@ -10,9 +10,15 @@ class Telemetry
     std::shared_ptr<TcpClient> _model;
 
 public:
-    explicit Telemetry(std::shared_ptr<TcpClient> model) : _model(model){}
+    explicit Telemetry(std::shared_ptr<TcpClient> model);
 
     // void setModelState();
     
-    int start();
+    void start();
+
+    void stop();
+
+    void generalInterrogation();
+
+    void digitalControl();
 };

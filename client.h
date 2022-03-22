@@ -4,6 +4,7 @@
 #include <ws2tcpip.h>
 #include <list>
 #include "interface.h"
+#include "type_traits_frame.h"
 
 class TcpClient : public IModelObservable
 {
@@ -13,7 +14,7 @@ class TcpClient : public IModelObservable
     SOCKET m_soket;
     sockaddr_in m_servInfo;
     HOSTENT *hst;    
-    std::list<std::weak_ptr<IViewObserver>> __observer;
+    mutable std::list<std::weak_ptr<IViewObserver>> __observer;
 
 public:
     TcpClient(const std::string& serveraddr, u_short port);
@@ -23,10 +24,11 @@ public:
 
     void addObserver(std::shared_ptr<IViewObserver>) override;
     void removeObserver(std::shared_ptr<IViewObserver>) override;
-    void notify(const std::string& message) override;
+    void notify(const std::string& message) const override;
     
     bool StartConnect(); 
-  
+    bool sendFrame(const Frame& frame) const;
+    bool recvAnswer();
     void startUpsocket();
     bool getip();
 

@@ -12,6 +12,6 @@ struct IModelObservable
 {
     virtual void addObserver(std::shared_ptr<IViewObserver>) = 0;
     virtual void removeObserver(std::shared_ptr<IViewObserver>) = 0;
-    virtual void notify(const std::string&) = 0;
+    virtual void notify(const std::string&) const = 0;
     ~IModelObservable() = default;
 };

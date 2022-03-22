@@ -6,6 +6,7 @@
 #include "client.h"
 #include "CliView.h"
 #include "telemetry.h"
+#include "type_traits_frame.h"
 
 
 int main(int argc, char* argv[])
@@ -14,5 +15,10 @@ int main(int argc, char* argv[])
     auto cli = CliView::create(client);
     Telemetry telemetry(client);
 
-    return telemetry.start();
+    telemetry.start();
+
+    // Frame test;
+    // test.setFrameType(TypeFrame::Start);
+    // test.printFrame();
+    return 0; 
 }

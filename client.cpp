@@ -123,11 +123,28 @@ bool TcpClient::sendFrame(const Frame &frame) const
 std::pair<bool, Frame> TcpClient::recvAnswer()
 {
     char *buf = new char[5];
+    buf[4] = '\n';
     Frame inframe;
 
-    int in =  recv(m_soket, buf, 5, 0);
+    int in =  recv(m_soket, buf, 4, 0);
     
-    inframe.setFrameBuf(buf, in);
+    if(in == 4)
+    {
+        Frame::size_f size;
+        memcpy(size.byte, buf, 4);
+        char *newbuf = new char[size.number];
+        memcpy(newbuf, buf, 4);
+        int n_in = recv(m_soket, newbuf+4, size.number-4, 0);
+        inframe.setFrameBuf(newbuf, n_in+in);
+        delete[] newbuf;
+    }
+    else
+    {
+        delete[] buf;
+        return std::make_pair(false, inframe);
+    }
+    
     delete[] buf;
+   
     return std::make_pair(true, inframe);
 }

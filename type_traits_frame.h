@@ -20,7 +20,7 @@ enum class TypeFrame
 class Frame
 {
     std::vector<char> m_frame;
-    union size_f
+public:     union size_f
     {
         unsigned long number;
         unsigned char byte[sizeof(unsigned long)];

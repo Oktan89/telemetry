@@ -5,7 +5,11 @@ set(MY_PROJECT_NAME telemetry)
 project(${MY_PROJECT_NAME} VERSION ${PROJECT_VESRION})
 
 
-add_executable(${MY_PROJECT_NAME} main.cpp)
+add_executable(${MY_PROJECT_NAME} main.cpp
+                                client.cpp 
+                                CliView.cpp
+                                telemetry.cpp
+)
 
 set_target_properties(${MY_PROJECT_NAME} PROPERTIES
     CXX_STANDARD 17

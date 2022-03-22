@@ -99,6 +99,7 @@ TcpClient::~TcpClient()
 {
     closesocket(m_soket);
     WSACleanup();
+    std::cout << "Connection closed\n";
 }
 
 bool TcpClient::sendFrame(const Frame &frame) const

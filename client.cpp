@@ -1,6 +1,7 @@
 #include "client.h"
 #include <algorithm>
 #include <stdexcept>
+#include <utility>
 
 void TcpClient::addObserver(std::shared_ptr<IViewObserver> observer)
 {
@@ -17,13 +18,13 @@ void TcpClient::removeObserver(std::shared_ptr<IViewObserver> observer)
         __observer.erase(it);
 }
 
-void TcpClient::notify(const std::string &message) const
+void TcpClient::notify(const std::string &message, const Frame& frame) const
 {
     for (auto it = __observer.begin(); it != __observer.end(); ++it)
     {
         auto ptr = it->lock();
         if (ptr)
-            ptr->update(message);
+            ptr->update(message, frame);
         else
             __observer.erase(it++);
     }
@@ -41,11 +42,11 @@ void TcpClient::startUpsocket()
     if (WSAStartup(MAKEWORD(2, 2), &ws_data))
     {
         throw std::runtime_error("Error WinSock version initializaion #" +
-                                 std::to_string(WSAGetLastError()));
+                                 std::to_string(WSAGetLastError()) + '\n');
     }
     else
     {
-        notify("WinSock initialization is OK");
+        notify("WinSock initialization is OK\n");
     }
 
     m_soket = socket(AF_INET, SOCK_STREAM, 0);
@@ -53,10 +54,10 @@ void TcpClient::startUpsocket()
     if (m_soket == INVALID_SOCKET)
     {
         throw std::runtime_error("Error initialization socket # " +
-                                 std::to_string(WSAGetLastError()));
+                                 std::to_string(WSAGetLastError()) + '\n');
     }
     else
-        notify("Server socket initialization is OK");
+        notify("Server socket initialization is OK\n");
 }
 
 bool TcpClient::getip()
@@ -73,7 +74,7 @@ bool TcpClient::getip()
                 ((unsigned long **)hst->h_addr_list)[0][0];
         else
         {
-            notify("Invalid address " + m_servername);
+            notify("Invalid address " + m_servername + '\n');
             return false;
         }
     }
@@ -86,11 +87,11 @@ bool TcpClient::StartConnect()
     if (connect(m_soket, (sockaddr *)&m_servInfo, sizeof(m_servInfo)))
     {
         notify("Connection to Server is FAILED. Error # " +
-               std::to_string(WSAGetLastError()));
+               std::to_string(WSAGetLastError()) + '\n');
         return false;
     }
     else
-        notify("Connection established SUCCESSFULLY");
+        notify("Connection established SUCCESSFULLY\n");
     return true;
 }
 
@@ -107,14 +108,26 @@ bool TcpClient::sendFrame(const Frame &frame) const
     if (packet_size == SOCKET_ERROR)
     {
        notify("Can't send message to Client. Error # " +
-        std::to_string(WSAGetLastError()));
+        std::to_string(WSAGetLastError()) + '\n');
         return false;
     }
     else if(packet_size != frame.size())
     {
         notify("Error sending the message. Error send # " +
-        std::to_string(packet_size));
+        std::to_string(packet_size) + '\n');
         return false;
     }
     return true;
+}
+
+std::pair<bool, Frame> TcpClient::recvAnswer()
+{
+    char *buf = new char[5];
+    Frame inframe;
+
+    int in =  recv(m_soket, buf, 5, 0);
+    
+    inframe.setFrameBuf(buf, in);
+    delete[] buf;
+    return std::make_pair(true, inframe);
 }

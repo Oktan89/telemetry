@@ -15,9 +15,17 @@ void Telemetry::start()
     start.setFrameType(TypeFrame::Start);
     if(_model->sendFrame(start))
     {
-        _model->notify("Sending START");
+        _model->notify("Sending START > ", start);
     }
 
+    if(const auto& [ok, frame] = _model->recvAnswer(); ok)
+    {
+        _model->notify("Receiving ACK < ", frame);
+    }
+    else
+    {
+        _model->notify("Error recv data");
+    }
 }
 
 // void Telemetry::setModelState()

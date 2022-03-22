@@ -24,11 +24,11 @@ public:
 
     void addObserver(std::shared_ptr<IViewObserver>) override;
     void removeObserver(std::shared_ptr<IViewObserver>) override;
-    void notify(const std::string& message) const override;
+    void notify(const std::string& message, const Frame& frame = Frame()) const override;
     
     bool StartConnect(); 
     bool sendFrame(const Frame& frame) const;
-    bool recvAnswer();
+    std::pair<bool, Frame> recvAnswer();
     void startUpsocket();
     bool getip();
 

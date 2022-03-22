@@ -2,6 +2,7 @@
 #include "client.h"
 #include <string>
 #include <iostream>
+#include "type_traits_frame.h"
 
 
 std::shared_ptr<CliView> CliView::getptr()
@@ -17,7 +18,12 @@ void CliView::setModel(model &model)
     _model->addObserver(shared_from_this());
 }
 
-void CliView::update(const std::string& message)
+void CliView::update(const std::string& message, const Frame& frame)
 {
-    std::cout << message << std::endl;
+    std::cout << message;
+
+    if(frame.getDataFrame()[4] != static_cast<char>(TypeFrame::Empty))
+    {
+        frame.printFrame();
+    }
 }

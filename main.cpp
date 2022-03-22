@@ -17,8 +17,5 @@ int main(int argc, char* argv[])
 
     telemetry.start();
 
-    // Frame test;
-    // test.setFrameType(TypeFrame::Start);
-    // test.printFrame();
     return 0; 
 }

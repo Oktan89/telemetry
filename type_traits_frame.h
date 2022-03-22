@@ -43,6 +43,18 @@ public:
         return m_frame.size();
     }
 
+    void setFrameBuf(const char* buf, std::size_t size)
+    {
+        if(m_frame.empty())
+        {
+            m_frame.reserve(size);
+        }
+        for(std::size_t i = 0; i < size; ++i)
+        {
+            m_frame[i] = buf[i];
+        }
+    }
+
     void setFrameType(TypeFrame type)
     {
         m_frame[4] = static_cast<char> (type);

@@ -104,7 +104,7 @@ TcpClient::~TcpClient()
 
 bool TcpClient::sendFrame(const Frame &frame) const
 {
-    int packet_size = send(m_soket, frame.getDataFrame() , frame.size(), 0);
+    int packet_size = send(m_soket, (char*)frame.getDataFrame() , frame.size(), 0);
 
     if (packet_size == SOCKET_ERROR)
     {
@@ -121,31 +121,16 @@ bool TcpClient::sendFrame(const Frame &frame) const
     return true;
 }
 
-std::pair<bool, Frame> TcpClient::recvAnswer()
+std::pair<bool, std::unique_ptr<Frame>> TcpClient::recvAnswer(int len)
 {
-    char *buf = new char[5];
-    buf[4] = '\n';
-    Frame inframe;
+    std::unique_ptr<Frame> frame(new Frame);
+    
+    int packet_size =  recv(m_soket, (char*)frame.get() , len, 0);
 
-    int in =  recv(m_soket, buf, 4, 0);
-    
-    if(in == 4)
+    if(packet_size != len)
     {
-        Frame::size_f size;
-        memcpy(size.byte, buf, 4);
-        char *newbuf = new char[size.number];
-        memcpy(newbuf, buf, 4);
-        int n_in = recv(m_soket, newbuf+4, size.number-4, 0);
-        inframe.setFrameBuf(newbuf, n_in+in);
-        delete[] newbuf;
-    }
-    else
-    {
-        delete[] buf;
-        return std::make_pair(false, inframe);
+        return std::make_pair(false, std::move(frame));
     }
     
-    delete[] buf;
-   
-    return std::make_pair(true, inframe);
+    return std::make_pair(true, std::move(frame));
 }

@@ -18,9 +18,9 @@ void Telemetry::start()
         _model->notify("Sending START > ", start);
     }
 
-    if(const auto& [ok, frame] = _model->recvAnswer(); ok)
+    if(const auto& [ok, frame] = _model->recvAnswer(5); ok)
     {
-        _model->notify("Receiving ACK < ", frame);
+        _model->notify("Receiving ACK < ", *frame->getDataFrame());
     }
     else
     {
@@ -28,6 +28,25 @@ void Telemetry::start()
     }
 }
 
+void Telemetry::stop()
+{
+    Frame stop;
+    stop.setFrameType(TypeFrame::Stop);
+
+    if(_model->sendFrame(stop))
+    {
+        _model->notify("Sending STOP > ", stop);
+    }
+
+    if(const auto& [ok, frame] = _model->recvAnswer(5); ok)
+    {
+        _model->notify("Receiving ACK < ", *frame->getDataFrame());
+    }
+    else
+    {
+        _model->notify("Error recv data");
+    }
+}
 // void Telemetry::setModelState()
 // {
 //     std::unique_ptr<__BaseState> state_static = std::make_unique<StaticBlock>();

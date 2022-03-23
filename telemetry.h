@@ -12,8 +12,6 @@ class Telemetry
 public:
     explicit Telemetry(std::shared_ptr<TcpClient> model);
 
-    // void setModelState();
-    
     void start();
 
     void stop();

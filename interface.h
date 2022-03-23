@@ -1,7 +1,7 @@
 #pragma once
-#include <memory>
 #include <string>
 #include "type_traits_frame.h"
+#include <memory>
 
 struct IViewObserver
 {
@@ -16,3 +16,4 @@ struct IModelObservable
     virtual void notify(const std::string&, const Frame& frame = Frame()) const = 0;
     ~IModelObservable() = default;
 };
+

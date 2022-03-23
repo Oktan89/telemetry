@@ -22,7 +22,7 @@ void CliView::update(const std::string& message, const Frame& frame)
 {
     std::cout << message;
 
-    if(frame.getDataFrame()[4] != static_cast<char>(TypeFrame::Empty))
+    if(frame.getFrameType() != TypeFrame::Empty)
     {
         frame.printFrame();
     }

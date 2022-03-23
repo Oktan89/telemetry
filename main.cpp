@@ -3,10 +3,13 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <memory>
+#include <ctime>
 #include "client.h"
 #include "CliView.h"
 #include "telemetry.h"
 #include "type_traits_frame.h"
+#include "interface.h"
+
 
 
 int main(int argc, char* argv[])
@@ -16,6 +19,8 @@ int main(int argc, char* argv[])
     Telemetry telemetry(client);
 
     telemetry.start();
+    telemetry.stop();
+
 
     return 0; 
 }

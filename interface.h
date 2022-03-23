@@ -17,3 +17,21 @@ struct IModelObservable
     ~IModelObservable() = default;
 };
 
+// class TcpClient;
+// class __BaseState
+// {
+// protected:
+//     std::shared_ptr<TcpClient> _modelContext;
+
+// public:
+    
+//     void setModelContext(std::shared_ptr<TcpClient> model)
+//     {   
+//         _modelContext = model;
+//     }
+//     virtual void ReadBlock() = 0;
+//     virtual void EndBlock() = 0;
+//     virtual void StartBlock() = 0;
+//     virtual void Exit() = 0;
+//     ~__BaseState() = default;
+// };

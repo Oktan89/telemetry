@@ -2,6 +2,8 @@
 #include "client.h"
 #include "type_traits_frame.h"
 
+constexpr int HEADSIZE =  5;
+
 Telemetry::Telemetry(std::shared_ptr<TcpClient> model): _model(model)
 {
     _model->startUpsocket();
@@ -18,9 +20,22 @@ void Telemetry::start()
         _model->notify("Sending START > ", start);
     }
 
-    if(const auto& [ok, frame] = _model->recvAnswer(5); ok)
+    if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
     {
-        _model->notify("Receiving ACK < ", *frame->getDataFrame());
+        switch(frame->getFrameType())
+        {
+            case TypeFrame::Ack:
+                _model->notify("Receiving ACK < ", *frame->getDataFrame());
+            break;
+
+            case TypeFrame::Nack:
+                _model->notify("Receiving Nack < ", *frame->getDataFrame());
+            break;
+
+            default:
+                _model->notify("Receiving Frame Type Error ! ["+
+                    std::to_string(static_cast<int>(frame->getFrameType())) +"]\n");
+        }
     }
     else
     {
@@ -38,9 +53,63 @@ void Telemetry::stop()
         _model->notify("Sending STOP > ", stop);
     }
 
-    if(const auto& [ok, frame] = _model->recvAnswer(5); ok)
+    if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
     {
-        _model->notify("Receiving ACK < ", *frame->getDataFrame());
+        switch(frame->getFrameType())
+        {
+            case TypeFrame::Ack:
+                _model->notify("Receiving ACK < ", *frame->getDataFrame());
+            break;
+
+            case TypeFrame::Nack:
+                _model->notify("Receiving Nack < ", *frame->getDataFrame());
+            break;
+
+            default:
+                _model->notify("Receiving Frame Type Error ! ["+
+                    std::to_string(static_cast<int>(frame->getFrameType())) +"]\n");
+        }
+        
+    }
+    else
+    {
+        _model->notify("Error recv data");
+    }
+}
+
+void Telemetry::generalInterrogation()
+{
+    Frame gi;
+    gi.setFrameType(TypeFrame::GeneralInterrogation);
+    
+
+    if(_model->sendFrame(gi))
+    {
+        _model->notify("Sending GI > ", gi);
+    }
+
+    if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
+    {
+        switch(frame->getFrameType())
+        {
+            case TypeFrame::Ack:
+                _model->notify("Receiving ACK < ", *frame->getDataFrame());
+                // gi.setPayLoad(std::make_unique<DigetalPoint>());
+                if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
+                {
+                    _model->notify("Digital < ", *frame->getDataFrame());
+                }
+            break;
+
+            case TypeFrame::Nack:
+                _model->notify("Receiving Nack < ", *frame->getDataFrame());
+            break;
+
+            default:
+                _model->notify("Receiving Frame Type Error ! ["+
+                    std::to_string(static_cast<int>(frame->getFrameType())) +"]\n");
+        }
+        
     }
     else
     {

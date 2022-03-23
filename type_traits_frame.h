@@ -86,6 +86,7 @@ public:
 
 class AnalogPoint : public __base_pay_load
 {
+    float value;
 public:
 
 };

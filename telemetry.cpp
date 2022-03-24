@@ -80,6 +80,7 @@ void Telemetry::stop()
 void Telemetry::generalInterrogation()
 {
     Frame gi;
+    gi.setPayLoad(std::make_unique<DigetalPoint>());
     gi.setFrameType(TypeFrame::GeneralInterrogation);
     
 
@@ -94,7 +95,7 @@ void Telemetry::generalInterrogation()
         {
             case TypeFrame::Ack:
                 _model->notify("Receiving ACK < ", *frame->getDataFrame());
-                // gi.setPayLoad(std::make_unique<DigetalPoint>());
+                
                 if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
                 {
                     _model->notify("Digital < ", *frame->getDataFrame());

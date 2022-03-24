@@ -119,6 +119,11 @@ public:
         uniq_payload.swap(payload);
     }
 
+    __base_pay_load* getPayLoad()
+    {
+        return uniq_payload.get();
+    }
+
     std::size_t size() const noexcept
     {
         return _length;

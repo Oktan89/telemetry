@@ -131,6 +131,6 @@ std::pair<bool, std::unique_ptr<Frame>> TcpClient::recvAnswer(int len)
     {
         return std::make_pair(false, std::move(frame));
     }
-    
+
     return std::make_pair(true, std::move(frame));
 }

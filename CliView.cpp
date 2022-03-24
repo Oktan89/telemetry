@@ -25,11 +25,7 @@ void CliView::update(const std::string& message, const Frame* frame)
     {
         if(frame->_frame_type != static_cast<decltype(frame->_frame_type)>(TypeFrame::Empty))
         {
-            std::cout << std::hex << frame->_length <<frame->_frame_type;
-            for(std::size_t i = 0; i < frame->_length; ++i)
-            {
-                //std::cout<< std::hex <<std::setfill('0') << std::setw(2) << frame->_payload;
-            }
+            std::cout<< std::hex <<std::setfill('0') << std::setw(2) << frame->_length <<" "<< (int)frame->_frame_type <<"\n";
             //std::cout<<std::resetiosflags(std::ios_base::basefield)<<std::endl;
         }
     }

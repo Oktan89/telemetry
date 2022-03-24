@@ -90,11 +90,21 @@ struct AnalogPoint
 //      Ack = 7
 //      Nack = 8
 // 3.	Полезная нагрузка Payload
+
+// Номер сигнала PointId – беззнаковое целое 4 байта LSB
+// Значение сигнала Value – беззнаковое целое 1 байт
+struct DigitalControl
+{
+    uint32_t  point_id;
+    uint8_t value;
+};
+
 struct Frame 
 {
     uint32_t _length{0};
     uint8_t _frame_type{0};
-    uint8_t *_payload{nullptr};
+    std::unique_ptr<uint8_t[]> _payload;
+    // void *_payload{nullptr};
 };
 
 

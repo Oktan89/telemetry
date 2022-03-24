@@ -120,7 +120,7 @@ TcpClient::~TcpClient()
 bool TcpClient::sendFrame(Frame *frame)
 {
     uint32_t size = frame->_length;
-    //frame->_length = uint32_to_lsb(size);
+    
     int packet_size = send(m_soket, (char*)frame, frame->_length, 0);
 
     if (packet_size < 0)
@@ -133,7 +133,7 @@ bool TcpClient::sendFrame(Frame *frame)
 #endif
         return false;
     }
-    else if(packet_size != 5)
+    else if(packet_size < 5)
     {
         notify("Error sending the message. Error send # " +
         std::to_string(packet_size) + '\n');
@@ -141,7 +141,7 @@ bool TcpClient::sendFrame(Frame *frame)
     }
     if(frame->_payload != nullptr)
     {
-        packet_size = send(m_soket, (char*)frame->_payload, frame->_length - size, 0);
+        packet_size = send(m_soket, frame->_payload.get(), frame->_length - size, 0);
     }
     return true;
 }
@@ -152,9 +152,22 @@ std::pair<bool, std::unique_ptr<Frame>> TcpClient::recvAnswer(int len)
     
     int packet_size =  recv(m_soket, (char*)frame.get() , len, 0);
 
-    if(packet_size != len)
+    if(packet_size < len)
     {
         return std::make_pair(false, std::move(frame));
+    }
+    if(frame->_length > 5)
+    {
+        std::unique_ptr<uint8_t[]> buffload = std::make_unique<uint8_t[]>(frame->_length);
+        packet_size = recv(m_soket, buffload.get(), frame->_length-len, 0);
+        if(packet_size != frame->_length-len)
+        {
+            return std::make_pair(false, std::move(frame));
+        }
+        else
+        {
+            frame->_payload = std::move(buffload);
+        }
     }
 
     return std::make_pair(true, std::move(frame));

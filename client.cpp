@@ -18,7 +18,7 @@ void TcpClient::removeObserver(std::shared_ptr<IViewObserver> observer)
         __observer.erase(it);
 }
 
-void TcpClient::notify(const std::string &message, const Frame& frame) const
+void TcpClient::notify(const std::string &message, const Frame* frame) const
 {
     for (auto it = __observer.begin(); it != __observer.end(); ++it)
     {
@@ -117,9 +117,11 @@ TcpClient::~TcpClient()
     std::cout << "Connection closed\n";
 }
 
-bool TcpClient::sendFrame(const Frame &frame) const
+bool TcpClient::sendFrame(Frame *frame)
 {
-    int packet_size = send(m_soket, (char*)frame.getDataFrame() , frame.size(), 0);
+    uint32_t size = frame->_length;
+    //frame->_length = uint32_to_lsb(size);
+    int packet_size = send(m_soket, (char*)frame, frame->_length, 0);
 
     if (packet_size < 0)
     {
@@ -131,11 +133,15 @@ bool TcpClient::sendFrame(const Frame &frame) const
 #endif
         return false;
     }
-    else if(packet_size != frame.size())
+    else if(packet_size != 5)
     {
         notify("Error sending the message. Error send # " +
         std::to_string(packet_size) + '\n');
         return false;
+    }
+    if(frame->_payload != nullptr)
+    {
+        packet_size = send(m_soket, (char*)frame->_payload, frame->_length - size, 0);
     }
     return true;
 }

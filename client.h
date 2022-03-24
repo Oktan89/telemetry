@@ -40,10 +40,10 @@ public:
 
     void addObserver(std::shared_ptr<IViewObserver>) override;
     void removeObserver(std::shared_ptr<IViewObserver>) override;
-    void notify(const std::string& message, const Frame& frame = Frame()) const override;
+    void notify(const std::string& message, const Frame* frame = nullptr) const override;
     
     bool StartConnect(); 
-    bool sendFrame(const Frame& frame) const;
+    bool sendFrame(Frame* frame);
     std::pair<bool, std::unique_ptr<Frame>> recvAnswer(int len);
     void startUpsocket();
     bool getip();

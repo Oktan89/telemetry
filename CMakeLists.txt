@@ -9,7 +9,7 @@ add_executable(${MY_PROJECT_NAME} main.cpp
                                 client.cpp 
                                 CliView.cpp
                                 telemetry.cpp
-                     
+                                type_traits_frame.cpp
 )
 
 set_target_properties(${MY_PROJECT_NAME} PROPERTIES

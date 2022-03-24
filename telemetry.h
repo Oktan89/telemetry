@@ -14,9 +14,9 @@ public:
 
     void start();
 
-    void stop();
+    // void stop();
 
-    void generalInterrogation();
+    // void generalInterrogation();
 
-    void digitalControl();
+    // void digitalControl();
 };

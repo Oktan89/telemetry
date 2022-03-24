@@ -24,7 +24,7 @@ public:
 
     void setModel(model& model);
 
-    void update(const std::string& message, const Frame& frame = Frame()) override;
+    void update(const std::string& message, const Frame* frame = nullptr) override;
 
     ~CliView() = default;
 

@@ -17,8 +17,8 @@ int main(int argc, char* argv[])
     Telemetry telemetry(client);
 
     telemetry.start();
-    telemetry.generalInterrogation();
-    telemetry.stop();
+    // telemetry.generalInterrogation();
+    // telemetry.stop();
 
 
     return 0; 

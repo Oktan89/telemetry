@@ -32,13 +32,14 @@ void TcpClient::notify(const std::string &message, const Frame& frame) const
 
 TcpClient::TcpClient(const std::string &serveraddr, u_short port) : m_servername(serveraddr), m_port(port)
 {
-    ZeroMemory(&m_servInfo, sizeof(m_servInfo));
+    //ZeroMemory(&m_servInfo, sizeof(m_servInfo));
     m_servInfo.sin_family = AF_INET;
     m_servInfo.sin_port = htons(m_port);
 }
 
 void TcpClient::startUpsocket()
 {
+#ifdef _WIN32
     if (WSAStartup(MAKEWORD(2, 2), &ws_data))
     {
         throw std::runtime_error("Error WinSock version initializaion #" +
@@ -48,13 +49,19 @@ void TcpClient::startUpsocket()
     {
         notify("WinSock initialization is OK\n");
     }
+#endif
 
     m_soket = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (m_soket == INVALID_SOCKET)
+    if (m_soket < 0 )
     {
+#ifdef _WIN32
         throw std::runtime_error("Error initialization socket # " +
                                  std::to_string(WSAGetLastError()) + '\n');
+#elif __unix__
+        throw std::runtime_error("Error initialization socket");
+#endif
+        
     }
     else
         notify("Server socket initialization is OK\n");
@@ -86,8 +93,12 @@ bool TcpClient::StartConnect()
 
     if (connect(m_soket, (sockaddr *)&m_servInfo, sizeof(m_servInfo)))
     {
+#ifdef _WIN32
         notify("Connection to Server is FAILED. Error # " +
                std::to_string(WSAGetLastError()) + '\n');
+#elif __unix__
+        notify("Connection to Server is FAILED");
+#endif
         return false;
     }
     else
@@ -97,8 +108,12 @@ bool TcpClient::StartConnect()
 
 TcpClient::~TcpClient()
 {
+#ifdef _WIN32
     closesocket(m_soket);
     WSACleanup();
+#elif __unix__
+    close(m_soket);
+#endif
     std::cout << "Connection closed\n";
 }
 
@@ -106,10 +121,14 @@ bool TcpClient::sendFrame(const Frame &frame) const
 {
     int packet_size = send(m_soket, (char*)frame.getDataFrame() , frame.size(), 0);
 
-    if (packet_size == SOCKET_ERROR)
+    if (packet_size < 0)
     {
+#ifdef _WIN32
        notify("Can't send message to Client. Error # " +
         std::to_string(WSAGetLastError()) + '\n');
+#elif __unix__
+        notify("Can't send message to Client.");
+#endif
         return false;
     }
     else if(packet_size != frame.size())

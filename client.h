@@ -1,7 +1,17 @@
 #pragma once
+#ifdef _WIN32
+    #include <winsock2.h>
+    #include <ws2tcpip.h>
+#elif __unix__
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <unistd.h>
+    #include <netdb.h>
+    #include <arpa/inet.h>
+#endif
+
 #include <string>
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #include <list>
 #include "interface.h"
 #include "type_traits_frame.h"
@@ -10,10 +20,16 @@ class TcpClient : public IModelObservable
 {
     std::string m_servername;
     u_short m_port;
+#ifdef _WIN32    
     WSADATA ws_data;
     SOCKET m_soket;
+    HOSTENT *hst; 
+#elif __unix__
+    int m_soket;
+    struct hostent *hst;
+#endif
     sockaddr_in m_servInfo;
-    HOSTENT *hst;    
+       
     mutable std::list<std::weak_ptr<IViewObserver>> __observer;
 
 public:

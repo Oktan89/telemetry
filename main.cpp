@@ -1,7 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #include <memory>
 #include <ctime>
 #include "client.h"

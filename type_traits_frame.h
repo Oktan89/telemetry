@@ -52,13 +52,21 @@ struct Quality
     uint8_t value;
 };
 
+// ◦ Причина передачи CauseOfTransmission – 1 байт
+// ◦ Количество сигналов Count – беззнаковое целое 2 байта LSB
+struct __attribute__((__packed__)) headDigital
+{
+    uint8_t reason;
+    u_short count;
+};
 // Дискретный сигнал DigitalPoint:
 // 1.	Номер сигнала PointId – беззнаковое целое 4 байта LSB
 // 2.	Значение сигнала Value – беззнаковое целое 1 байт
 // 3.	Метка времени (unix-time) TimeTag – целое 8 байт LSB
 // 4.	Качество сигнала Quality тип данных Quality
 
-struct DigetalPoint
+
+struct __attribute__((__packed__)) DigetalPoint
 {
     uint32_t point_id;
     uint8_t value;

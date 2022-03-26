@@ -76,6 +76,7 @@ void DataView::showDigitalConrol(uint8_t *data)
         << ", Value = "<< static_cast<uint32_t>(frameConrol->value) 
         << std::endl;
 }
+
 void DataView::showDigitalPoint(uint8_t *data)
 {   
     auto head = std::make_unique<headPoint>();

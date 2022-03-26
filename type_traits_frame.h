@@ -70,7 +70,7 @@ struct __attribute__((__packed__)) DigetalPoint
 {
     uint32_t point_id;
     uint8_t value;
-    uint64_t time_tag;
+    int64_t time_tag;
     Quality quality;
 };
 // Аналоговый сигнал AnalogPoint:

@@ -32,16 +32,18 @@ void DataView::update(const std::string& message, const Frame* frame)
         switch (static_cast<TypeFrame>(frame->_frame_type))
         {
         case TypeFrame::AnalogPoints :
-            showAnalogPoint(frame->_payload.get(), frame->_length);
+           // showAnalogPoint(frame->_payload.get(), frame->_length);
             break;
         case TypeFrame::DigitalPoints :
             showDigitalPoint(frame->_payload.get(), frame->_length);
             break;
         case TypeFrame::DigitalControl :
-            std::cout << "digitalcontrol" << std::endl;
+           // std::cout << "digitalcontrol" << std::endl;
         default:
+            
             break;
         }
+        std::cout << std::endl;
     }
 
 }
@@ -64,10 +66,12 @@ void showDigitalPoint(uint8_t *data, std::size_t size)
     data = data+sizeof(headDigital);
     memcpy(point, data, sizeof(DigetalPoint)*head->count);
     std::cout << std::endl;
+
     for(std::size_t i = 0; i < head->count; ++i)
     {
+        std::time_t time = point[i].time_tag;
         std::cout << "PointId= " << point[i].point_id << ", Value= " << static_cast<uint32_t>(point[i].value) 
-            << ", TimeTag = " << point[i].time_tag <<", Quality = [" << point[i].quality.value << "]" << std::endl;
+            << ", TimeTag = " << std::put_time(std::localtime(&time), "%d.%m.%Y %T") <<", Quality = [" << point[i].quality.value << "]" << std::endl;
     }
     delete head;
     delete point;

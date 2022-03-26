@@ -76,7 +76,7 @@ void Telemetry::generalInterrogation()
     
     if(_model->sendFrame(&start))
     {
-        _model->notify("Sending GI > ", &start);
+        _model->notify("Sending GInte > ", &start);
     }
 
     if(const auto& [ok, frame] = _model->recvAnswer(); ok)

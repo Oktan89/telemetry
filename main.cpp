@@ -10,6 +10,17 @@
 #include "interface.h"
 
 
+// struct test
+// {
+//     //uint8_t :1;
+//     uint8_t t;
+//    // uint8_t t2;
+//     //uint8_t :1;
+//     uint16_t h;
+//     uint8_t :31;
+//     uint8_t :31;
+//     //uint32_t checksum;
+// };
 
 int main(int argc, char* argv[])
 {
@@ -23,5 +34,8 @@ int main(int argc, char* argv[])
     telemetry.digitalControl(2, 1);
     telemetry.stop();
 
+    //std::cout << sizeof(Quality) << std::endl;
     return 0; 
 }
+
+//std::cout << offsetof(test, h) << std::endl;

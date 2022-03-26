@@ -1,10 +1,11 @@
 #pragma once
-// #include "interface.h"
+
 #include <vector>
-#include <cassert>
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <bitset>
+#include <cstdint>
 
 constexpr int HEADSIZE =  5;
 
@@ -47,46 +48,87 @@ enum class TransmissionType
 // 1.	Значение достоверно Valid – 1 бит
 // 2.	Значение установлено вручную Substituted – 2 бит
 // 3.	Значение переполнено Overflow – 3 бит
+
 struct Quality
 {
     uint8_t value;
+    std::string getQuality()
+    {
+        
+        std::bitset<3> q(value);
+        std::string quality;
+        if(q.none()) quality = "Invalid";
+        if(q.any())
+        {
+            if(q.test(0)) quality = "Valid";
+            if(q.test(1)) quality += "Substituted";
+            if(q.test(2)) quality = "Invalid, Overflow";
+        }
+        return quality;
+    }
 };
 
 // ◦ Причина передачи CauseOfTransmission – 1 байт
 // ◦ Количество сигналов Count – беззнаковое целое 2 байта LSB
-struct __attribute__((__packed__)) headDigital
+
+#ifdef _MSC_VER
+#pragma pack (push, 1)
+struct   headDigital
+#endif
+#ifndef _MSC_VER 
+struct __attribute__((__packed__)) headPoint
+#endif 
 {
     uint8_t reason;
-    u_short count;
+    uint16_t count;
 };
+#ifdef _MSC_VER
+#pragma pack (pop)
+#endif
 // Дискретный сигнал DigitalPoint:
 // 1.	Номер сигнала PointId – беззнаковое целое 4 байта LSB
 // 2.	Значение сигнала Value – беззнаковое целое 1 байт
 // 3.	Метка времени (unix-time) TimeTag – целое 8 байт LSB
 // 4.	Качество сигнала Quality тип данных Quality
 
-
+#ifdef _MSC_VER
+#pragma pack (push, 1)
+struct   DigetalPoint
+#endif
+#ifndef _MSC_VER 
 struct __attribute__((__packed__)) DigetalPoint
+#endif 
 {
     uint32_t point_id;
     uint8_t value;
     int64_t time_tag;
     Quality quality;
 };
+#ifdef _MSC_VER
+#pragma pack (pop)
+#endif
+
 // Аналоговый сигнал AnalogPoint:
 // 1.	Номер сигнала PointId – беззнаковое целое 4 байта LSB
 // 2.	Значение сигнала Value – число с плавающей точкой 4 байт LSB
 // 3.	Метка времени (unix-time) TimeTag – целое 8 байт LSB
 // 4.	Качество сигнала Quality тип данных Quality
-
-struct AnalogPoint
+#ifdef _MSC_VER
+#pragma pack (push, 1)
+struct   DigetalPoint
+#endif
+#ifndef _MSC_VER 
+struct __attribute__((__packed__)) AnalogPoint
+#endif 
 {
     uint32_t point_id;
     float value;
     uint64_t time_tag;
     Quality quality;
 };
-
+#ifdef _MSC_VER
+#pragma pack (pop)
+#endif
 
 
 // Номер сигнала PointId – беззнаковое целое 4 байта LSB

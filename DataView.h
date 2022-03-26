@@ -11,6 +11,9 @@ private:
     model _model;
 
     DataView() = default;
+    void showAnalogPoint(uint8_t *data);
+    void showDigitalPoint(uint8_t *data);
+    void showDigitalConrol(uint8_t *data);
 public:
     
     static std::shared_ptr<DataView> create(model mod)

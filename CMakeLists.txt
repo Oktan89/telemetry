@@ -7,7 +7,8 @@ project(${MY_PROJECT_NAME} VERSION ${PROJECT_VESRION})
 
 add_executable(${MY_PROJECT_NAME} main.cpp
                                 client.cpp 
-                                CliView.cpp
+                                ProtocolView.cpp
+                                DataView.cpp
                                 telemetry.cpp
                                 type_traits_frame.cpp
 )

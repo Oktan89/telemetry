@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 
+constexpr int HEADSIZE =  5;
 
 enum class TypeFrame
 {
@@ -78,6 +79,16 @@ struct AnalogPoint
     Quality quality;
 };
 
+
+
+// Номер сигнала PointId – беззнаковое целое 4 байта LSB
+// Значение сигнала Value – беззнаковое целое 1 байт
+struct DigitalControl
+{
+    uint32_t  point_id;
+    uint8_t value;
+};
+
 // Формат кадра:
 // 1.	Длина всего кадра Length – беззнаковое целое 4 байта LSB
 // 2.	Тип кадра FrameType – беззнаковое целое 1 байт
@@ -91,21 +102,49 @@ struct AnalogPoint
 //      Nack = 8
 // 3.	Полезная нагрузка Payload
 
-// Номер сигнала PointId – беззнаковое целое 4 байта LSB
-// Значение сигнала Value – беззнаковое целое 1 байт
-struct DigitalControl
-{
-    uint32_t  point_id;
-    uint8_t value;
-};
-
 struct Frame 
 {
-    uint32_t _length{0};
-    uint8_t _frame_type{0};
+    uint32_t _length;
+    uint8_t _frame_type;
     std::unique_ptr<uint8_t[]> _payload;
-    // void *_payload{nullptr};
 };
+
+typedef struct Length
+{
+    union 
+    {
+       struct 
+       {
+           uint8_t byte1, byte2, byte3, byte4;
+       } ln_un_b;
+       struct 
+       {
+           uint32_t len;
+       } ln_in_int;
+       
+    }leng;
+} LENB;
+
+
+// • Значение полезной нагрузки Payload DigitalControl:
+//     ◦ Номер сигнала PointId – беззнаковое целое 4 байта LSB
+//     • Значение полезной нагрузки Payload:
+//     ◦ Значение сигнала Value – беззнаковое целое 1 байт
+typedef struct SygnalPointId
+{
+    union
+    {
+        struct
+        {
+            uint8_t byte1, byte2, byte3, byte4;
+        } id_un_b;
+        struct
+        {
+            uint32_t val_id;
+        } id_un_int;
+    } point_id;
+} DSYGNAl;
+
 
 
 

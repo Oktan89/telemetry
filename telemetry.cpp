@@ -2,7 +2,19 @@
 #include "client.h"
 #include "type_traits_frame.h"
 
-constexpr int HEADSIZE =  5;
+std::unique_ptr<uint8_t[]> setDigitalSygnal(uint32_t id, uint8_t val)
+{
+    DSYGNAl number;
+    number.point_id.id_un_int.val_id = 2;
+    auto payload = std::make_unique<uint8_t[]>(5);
+
+        payload[0] = number.point_id.id_un_b.byte1;
+        payload[1] = number.point_id.id_un_b.byte2;
+        payload[2] = number.point_id.id_un_b.byte3;
+        payload[3] = number.point_id.id_un_b.byte4;
+        payload[4] = val;
+    return payload;
+}
 
 Telemetry::Telemetry(std::shared_ptr<TcpClient> model): _model(model)
 {
@@ -23,7 +35,7 @@ void Telemetry::start()
         _model->notify("Sending START > ", &start);
     }
 
-    if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
+    if(const auto& [ok, frame] = _model->recvAnswer(); ok)
     {
         _model->notify("Receiving ACK < ", frame.get());
     }
@@ -45,7 +57,7 @@ void Telemetry::stop()
         _model->notify("Sending STOP > ", &start);
     }
 
-    if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
+    if(const auto& [ok, frame] = _model->recvAnswer(); ok)
     {
         _model->notify("Receiving ACK < ", frame.get());
     }
@@ -67,7 +79,7 @@ void Telemetry::generalInterrogation()
         _model->notify("Sending GI > ", &start);
     }
 
-    if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
+    if(const auto& [ok, frame] = _model->recvAnswer(); ok)
     {
         _model->notify("Receiving ACK < ", frame.get());
     }
@@ -75,7 +87,7 @@ void Telemetry::generalInterrogation()
     {
         _model->notify("Error recv data");
     }
-    if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
+    if(const auto& [ok, frame] = _model->recvAnswer(); ok)
     {
         _model->notify("Receiving DigitalPoints < ", frame.get());
     }
@@ -83,7 +95,7 @@ void Telemetry::generalInterrogation()
     {
         _model->notify("Error recv data");
     }
-    if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
+    if(const auto& [ok, frame] = _model->recvAnswer(); ok)
     {
         _model->notify("Receiving AnalogPoints < ", frame.get());
     }
@@ -98,13 +110,8 @@ void Telemetry::digitalControl(uint32_t id, uint8_t val)
     Frame start;
     start._frame_type = static_cast<decltype(start._frame_type)>(TypeFrame::DigitalControl);
     start._length = 10;
-    start._payload = std::make_unique<uint8_t[]>(5);
+    start._payload = setDigitalSygnal(id, val);
     
-    start._payload[0] = static_cast<uint8_t>(2);
-    start._payload[1] = static_cast<uint8_t>(0);
-    start._payload[2] = static_cast<uint8_t>(0);
-    start._payload[3] = static_cast<uint8_t>(0);
-    start._payload[4] = val;
  
     if(_model->sendFrame(&start))
     {
@@ -112,7 +119,7 @@ void Telemetry::digitalControl(uint32_t id, uint8_t val)
 
     }
 
-    if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
+    if(const auto& [ok, frame] = _model->recvAnswer(); ok)
     {
         if(frame->_frame_type == static_cast<uint8_t>(TypeFrame::Nack))
         {
@@ -125,7 +132,7 @@ void Telemetry::digitalControl(uint32_t id, uint8_t val)
     {
         _model->notify("Error recv data");
     }
-    if(const auto& [ok, frame] = _model->recvAnswer(HEADSIZE); ok)
+    if(const auto& [ok, frame] = _model->recvAnswer(); ok)
     {
         _model->notify("Receiving DigitalPoints < ", frame.get());
     }

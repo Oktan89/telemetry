@@ -64,7 +64,7 @@ void TcpClient::startUpsocket()
         
     }
     else
-        notify("Server socket initialization is OK\n");
+        notify("Server socket initialization is OK");
 }
 
 bool TcpClient::getip()
@@ -81,7 +81,7 @@ bool TcpClient::getip()
                 ((unsigned long **)hst->h_addr_list)[0][0];
         else
         {
-            notify("Invalid address " + m_servername + '\n');
+            notify("Invalid address " + m_servername);
             return false;
         }
     }
@@ -102,7 +102,7 @@ bool TcpClient::StartConnect()
         return false;
     }
     else
-        notify("Connection established SUCCESSFULLY\n");
+        notify("Connection established SUCCESSFULLY");
     return true;
 }
 
@@ -119,9 +119,8 @@ TcpClient::~TcpClient()
 
 bool TcpClient::sendFrame(Frame *frame)
 {
-    uint32_t size = frame->_length;
-    
-    int packet_size = send(m_soket, (char*)frame, frame->_length, 0);
+     
+    int packet_size = send(m_soket, (char*)frame, HEADSIZE, 0);
 
     if (packet_size < 0)
     {
@@ -136,31 +135,31 @@ bool TcpClient::sendFrame(Frame *frame)
     else if(packet_size < 5)
     {
         notify("Error sending the message. Error send # " +
-        std::to_string(packet_size) + '\n');
+        std::to_string(packet_size));
         return false;
     }
     if(frame->_payload != nullptr)
     {
-        packet_size = send(m_soket, frame->_payload.get(), frame->_length - size, 0);
+        packet_size = send(m_soket, frame->_payload.get(), frame->_length - HEADSIZE, 0);
     }
     return true;
 }
 
-std::pair<bool, std::unique_ptr<Frame>> TcpClient::recvAnswer(int len)
+std::pair<bool, std::unique_ptr<Frame>> TcpClient::recvAnswer()
 {
     std::unique_ptr<Frame> frame(new Frame);
     
-    int packet_size =  recv(m_soket, (char*)frame.get() , len, 0);
+    int packet_size =  recv(m_soket, (char*)frame.get() , HEADSIZE, 0);
 
-    if(packet_size < len)
+    if(packet_size < HEADSIZE)
     {
         return std::make_pair(false, std::move(frame));
     }
     if(frame->_length > 5)
     {
         std::unique_ptr<uint8_t[]> buffload = std::make_unique<uint8_t[]>(frame->_length);
-        packet_size = recv(m_soket, buffload.get(), frame->_length-len, 0);
-        if(packet_size != frame->_length-len)
+        packet_size = recv(m_soket, buffload.get(), frame->_length-HEADSIZE, 0);
+        if(packet_size != frame->_length-HEADSIZE)
         {
             return std::make_pair(false, std::move(frame));
         }

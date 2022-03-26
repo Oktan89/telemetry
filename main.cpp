@@ -21,6 +21,5 @@ int main(int argc, char* argv[])
     telemetry.digitalControl(2, 1);
     telemetry.stop();
 
-
     return 0; 
 }

@@ -44,7 +44,7 @@ public:
     
     bool StartConnect(); 
     bool sendFrame(Frame* frame);
-    std::pair<bool, std::unique_ptr<Frame>> recvAnswer(int len);
+    std::pair<bool, std::unique_ptr<Frame>> recvAnswer();
     void startUpsocket();
     bool getip();
 

@@ -56,12 +56,12 @@ struct Quality
     {
         std::bitset<8> q(value);
         std::string quality;
-        if(q.none()) quality = " Invalid ";
+        quality = "Invalid";
         if(q.any())
         {
-            if(q.test(0)) quality = " Valid ";
-            if(q.test(1)) quality += " Substituted ";
-            if(q.test(2)) quality += " Overflow ";
+            if(q.test(0)) quality = "Valid";
+            if(q.test(1)) quality += ", Substituted";
+            if(q.test(2)) quality += ", Overflow";
         }
                 
         return quality;

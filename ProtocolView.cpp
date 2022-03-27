@@ -52,5 +52,3 @@ void ProtocolView::update(const std::string& message, const Frame* frame)
     }
     std::cout << std::endl;
 }
-
-//

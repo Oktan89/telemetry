@@ -1,7 +1,6 @@
 #include "DataView.h"
 #include "client.h"
 #include <string>
-#include <vector>
 #include <iostream>
 #include <cstring>
 #include <memory>
@@ -38,6 +37,8 @@ void DataView::update(const std::string& message, const Frame* frame)
             break;
         case TypeFrame::DigitalControl :
             showDigitalConrol(frame->_payload.get());
+            break;
+        default:
             break;
         }
     }

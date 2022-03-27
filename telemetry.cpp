@@ -5,7 +5,7 @@
 std::unique_ptr<uint8_t[]> setDigitalSygnal(uint32_t id, uint8_t val)
 {
     DSYGNAl number;
-    number.point_id.id_un_int.val_id = 2;
+    number.point_id.id_un_int.val_id = id;
     auto payload = std::make_unique<uint8_t[]>(5);
 
         payload[0] = number.point_id.id_un_b.byte1;

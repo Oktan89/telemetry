@@ -21,3 +21,22 @@ set_target_properties(${MY_PROJECT_NAME} PROPERTIES
 if(WIN32)
     target_link_libraries(${MY_PROJECT_NAME} wsock32 ws2_32)
 endif()
+
+if (MSVC)
+    target_compile_options(${MY_PROJECT_NAME} PRIVATE
+        /W4
+    )
+else ()
+    target_compile_options(${MY_PROJECT_NAME} PRIVATE
+        -Wall -Wextra -pedantic -Werror
+    )
+endif()
+
+install(TARGETS ${MY_PROJECT_NAME} RUNTIME DESTINATION bin)
+
+set(CPACK_GENERATOR DEB)
+set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_CONTACT r.zhigalenko@mail.ru)
+include(CPack)

@@ -72,10 +72,7 @@ bool TcpClient::getip()
         m_servInfo.sin_addr.s_addr = inet_addr(m_servername.c_str());
     else
     {
-        // попытка получить IP адрес по доменному имени сервера
-        if (hst = gethostbyname(m_servername.c_str()))
-            // hst->h_addr_list содержит не массив адресов,
-            // а массив указателей на адреса
+        if ((hst = gethostbyname(m_servername.c_str())))
             ((unsigned long *)&m_servInfo.sin_addr)[0] =
                 ((unsigned long **)hst->h_addr_list)[0][0];
         else
@@ -148,7 +145,7 @@ std::pair<bool, std::unique_ptr<Frame>> TcpClient::recvAnswer()
 {
     std::unique_ptr<Frame> frame(new Frame);
     
-    int packet_size =  recv(m_soket, (char*)frame.get() , HEADSIZE, 0);
+    uint32_t packet_size =  recv(m_soket, (char*)frame.get() , HEADSIZE, 0);
 
     if(packet_size < HEADSIZE)
     {

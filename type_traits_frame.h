@@ -204,4 +204,3 @@ void SwapEndiannes(T& var)
         std::swap(varArray[sizeof(var) -1 - i], varArray[i]);
     }
 }
-

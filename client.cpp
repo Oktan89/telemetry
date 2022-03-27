@@ -32,7 +32,6 @@ void TcpClient::notify(const std::string &message, const Frame* frame) const
 
 TcpClient::TcpClient(const std::string &serveraddr, u_short port) : m_servername(serveraddr), m_port(port)
 {
-    //ZeroMemory(&m_servInfo, sizeof(m_servInfo));
     m_servInfo.sin_family = AF_INET;
     m_servInfo.sin_port = htons(m_port);
 }
@@ -90,7 +89,7 @@ bool TcpClient::getip()
 
 bool TcpClient::StartConnect()
 {
-
+    notify("Connecting to " + m_servername +":" + std::to_string(m_port));
     if (connect(m_soket, (sockaddr *)&m_servInfo, sizeof(m_servInfo)))
     {
 #ifdef _WIN32

@@ -33,17 +33,6 @@ enum class TransmissionType
 };
 
 
-
-    using uint32_lsb_t = uint32_t;
-
-    uint32_t swap_uint32(uint32_t in);
-
-
-    uint32_lsb_t uint32_to_lsb(uint32_t in);
-
-
-    uint32_t lsb_to_uint32(uint32_lsb_t in);
-
 // Качество Quality – беззнаковое целое 1 байт:
 // 1.	Значение достоверно Valid – 1 бит
 // 2.	Значение установлено вручную Substituted – 2 бит
@@ -195,7 +184,24 @@ typedef struct SygnalPointId
     } point_id;
 } DSYGNAl;
 
+using uint32_lsb_t = uint32_t;
+
+uint32_t swap_uint32(uint32_t in);
 
 
+uint32_lsb_t uint32_to_lsb(uint32_t in);
 
+
+uint32_t lsb_to_uint32(uint32_lsb_t in);
+
+template <typename T>
+void SwapEndiannes(T& var)
+{
+    char* varArray = reinterpret_cast<char*>(&var);
+
+    for(std::size_t i = 0; i < static_cast<std::size_t>(sizeof(var)/2); ++i)
+    {
+        std::swap(varArray[sizeof(var) -1 - i], varArray[i]);
+    }
+}
 

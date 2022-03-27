@@ -38,8 +38,6 @@ void DataView::update(const std::string& message, const Frame* frame)
             break;
         case TypeFrame::DigitalControl :
             showDigitalConrol(frame->_payload.get());
-        default:
-            
             break;
         }
     }
@@ -55,12 +53,13 @@ void DataView::showAnalogPoint(uint8_t *data)
     data = data + sizeof(headPoint);
     memcpy(point.get(), data, sizeof(AnalogPoint)*head->count);
     std::cout << std::endl;
-
+    convert_LSB_MSB(point, head->count);
+    
     for(std::size_t i = 0; i < head->count; ++i)
-    {
+    {   
         std::time_t time = point[i].time_tag;
         std::cout << "\tPointId= " << point[i].point_id << ", Value= " 
-            << static_cast<float>(point[i].value) 
+            << std::setprecision(1) << std::fixed << static_cast<float>(point[i].value) 
             << ", TimeTag = " << std::put_time(std::localtime(&time), "%d.%m.%Y %T") 
             <<", Quality = [" << point[i].quality.getQuality() << "]" 
             << std::endl;
@@ -86,6 +85,7 @@ void DataView::showDigitalPoint(uint8_t *data)
     data = data + sizeof(headPoint);
     memcpy(point.get(), data, sizeof(DigetalPoint)*head->count);
     std::cout << std::endl;
+    convert_LSB_MSB(point, head->count);
 
     for(std::size_t i = 0; i < head->count; ++i)
     {
@@ -96,4 +96,26 @@ void DataView::showDigitalPoint(uint8_t *data)
             <<", Quality = [" << point[i].quality.getQuality() << "]" 
             << std::endl;
     }
+}
+
+void DataView::setLSB()
+{
+    isLBS = true;
+}
+
+void DataView::setMSB()
+{
+    isLBS = false;
+}
+
+std::string DataView::checkEndian()
+{
+     uint16_t x = 0x0001;
+     *((uint8_t *) &x) ? setLSB() : setMSB();
+     return (isLBS)? "Set Little-endian" : "Set Big-endian";
+}
+
+DataView::DataView()
+{
+    std::cout << checkEndian() << std::endl;
 }

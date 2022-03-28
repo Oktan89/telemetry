@@ -62,7 +62,7 @@ struct Quality
 
 #ifdef _MSC_VER
 #pragma pack (push, 1)
-struct   headDigital
+struct   headPoint
 #endif
 #ifndef _MSC_VER 
 struct __attribute__((__packed__)) headPoint
@@ -104,7 +104,7 @@ struct __attribute__((__packed__)) DigetalPoint
 // 4.	Качество сигнала Quality тип данных Quality
 #ifdef _MSC_VER
 #pragma pack (push, 1)
-struct   DigetalPoint
+struct   AnalogPoint
 #endif
 #ifndef _MSC_VER 
 struct __attribute__((__packed__)) AnalogPoint

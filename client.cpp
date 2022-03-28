@@ -46,7 +46,7 @@ void TcpClient::startUpsocket()
     }
     else
     {
-        notify("WinSock initialization is OK\n");
+        notify("WinSock initialization is OK");
     }
 #endif
 
@@ -91,7 +91,7 @@ bool TcpClient::StartConnect()
     {
 #ifdef _WIN32
         notify("Connection to Server is FAILED. Error # " +
-               std::to_string(WSAGetLastError()) + '\n');
+               std::to_string(WSAGetLastError()));
 #elif __unix__
         notify("Connection to Server is FAILED");
 #endif
@@ -122,7 +122,7 @@ bool TcpClient::sendFrame(Frame *frame)
     {
 #ifdef _WIN32
        notify("Can't send message to Client. Error # " +
-        std::to_string(WSAGetLastError()) + '\n');
+        std::to_string(WSAGetLastError()));
 #elif __unix__
         notify("Can't send message to Client.");
 #endif
@@ -136,7 +136,7 @@ bool TcpClient::sendFrame(Frame *frame)
     }
     if(frame->_payload != nullptr)
     {
-        packet_size = send(m_soket, frame->_payload.get(), frame->_length - HEADSIZE, 0);
+        packet_size = send(m_soket, (char*)frame->_payload.get(), frame->_length - HEADSIZE, 0);
     }
     return true;
 }
@@ -154,7 +154,7 @@ std::pair<bool, std::unique_ptr<Frame>> TcpClient::recvAnswer()
     if(frame->_length > 5)
     {
         std::unique_ptr<uint8_t[]> buffload = std::make_unique<uint8_t[]>(frame->_length);
-        packet_size = recv(m_soket, buffload.get(), frame->_length-HEADSIZE, 0);
+        packet_size = recv(m_soket, (char*)buffload.get(), frame->_length-HEADSIZE, 0);
         if(packet_size != frame->_length-HEADSIZE)
         {
             return std::make_pair(false, std::move(frame));

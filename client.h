@@ -22,7 +22,7 @@ class TcpClient : public IModelObservable
     u_short m_port;
 #ifdef _WIN32    
     WSADATA ws_data;
-    SOCKET m_soket;
+    int m_soket;
     HOSTENT *hst; 
 #elif __unix__
     int m_soket;

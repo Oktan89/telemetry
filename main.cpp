@@ -21,7 +21,7 @@ int main()
     
     telemetry.start();
     telemetry.generalInterrogation();
-    telemetry.digitalControl(2, 1);
+    telemetry.digitalControl(1000, 1);
 
     telemetry.stop();
 

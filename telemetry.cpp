@@ -19,8 +19,10 @@ std::unique_ptr<uint8_t[]> setDigitalSygnal(uint32_t id, uint8_t val)
 Telemetry::Telemetry(std::shared_ptr<TcpClient> model): _model(model)
 {
     _model->startUpsocket();
-    _model->getip();
-    _model->StartConnect();
+    if(!_model->getip())
+        exit(EXIT_FAILURE);
+    if(!_model->StartConnect())
+        exit(EXIT_FAILURE);
 }
 
 void Telemetry::start()

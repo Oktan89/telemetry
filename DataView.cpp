@@ -61,7 +61,7 @@ void DataView::showAnalogPoint(uint8_t *data)
         std::time_t time = point[i].time_tag;
         std::cout << "\tPointId= " << point[i].point_id << ", Value= " 
             << std::setprecision(1) << std::fixed << static_cast<float>(point[i].value) 
-            << ", TimeTag = " << std::put_time(std::localtime(&time), "%d.%m.%Y %T") 
+            << ", TimeTag = " << std::put_time(std::localtime(&time), "%d.%m.%Y %H:%M:%S") 
             <<", Quality = [" << point[i].quality.getQuality() << "]" 
             << std::endl;
     }
@@ -93,7 +93,7 @@ void DataView::showDigitalPoint(uint8_t *data)
         std::time_t time = point[i].time_tag;
         std::cout << "\tPointId= " << point[i].point_id << ", Value= " 
             << static_cast<uint32_t>(point[i].value) 
-            << ", TimeTag = " << std::put_time(std::localtime(&time), "%d.%m.%Y %T") 
+            << ", TimeTag = " << std::put_time(std::localtime(&time), "%d.%m.%Y %H:%M:%S") 
             <<", Quality = [" << point[i].quality.getQuality() << "]" 
             << std::endl;
     }
